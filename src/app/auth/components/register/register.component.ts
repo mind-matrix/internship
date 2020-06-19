@@ -11,7 +11,7 @@ class Address {
     city: string,
     state: string,
     pin: number,
-    landmark: string
+    landmark: string,
   ) { }
 }
 
@@ -23,7 +23,7 @@ class Address {
 export class NgxRegisterComponent extends NbRegisterComponent implements OnInit {
 
   org: any = {
-    address: Address
+    address: Address,
   };
 
   latitude: number;
@@ -42,30 +42,30 @@ export class NgxRegisterComponent extends NbRegisterComponent implements OnInit 
     protected cd: ChangeDetectorRef,
     protected router: Router,
     private mapsAPILoader: MapsAPILoader,
-    private ngZone: NgZone
+    private ngZone: NgZone,
   ) {
     super(service, options, cd, router);
   }
 
 
   ngOnInit() {
-    //load Places Autocomplete
+    // load Places Autocomplete
     this.mapsAPILoader.load().then(() => {
       this.setCurrentLocation();
       this.geoCoder = new google.maps.Geocoder;
 
-      let autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement);
-      autocomplete.addListener("place_changed", () => {
+      const autocomplete = new google.maps.places.Autocomplete(this.searchElementRef.nativeElement);
+      autocomplete.addListener('place_changed', () => {
         this.ngZone.run(() => {
-          //get the place result
-          let place: google.maps.places.PlaceResult = autocomplete.getPlace();
+          // get the place result
+          const place: google.maps.places.PlaceResult = autocomplete.getPlace();
 
-          //verify result
+          // verify result
           if (place.geometry === undefined || place.geometry === null) {
             return;
           }
 
-          //set latitude, longitude and zoom
+          // set latitude, longitude and zoom
           this.latitude = place.geometry.location.lat();
           this.longitude = place.geometry.location.lng();
           this.zoom = 12;
