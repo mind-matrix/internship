@@ -4,6 +4,17 @@ import { NbRegisterComponent, NbAuthService, NB_AUTH_OPTIONS } from '@nebular/au
 import { MapsAPILoader, MouseEvent } from '@agm/core';
 import { Router } from '@angular/router';
 
+class Address {
+  constructor(
+    line1: string,
+    line2: string,
+    city: string,
+    state: string,
+    pin: number,
+    landmark: string
+  ) { }
+}
+
 @Component({
   selector: 'ngx-register',
   templateUrl: './register.component.html',
@@ -11,7 +22,9 @@ import { Router } from '@angular/router';
 })
 export class NgxRegisterComponent extends NbRegisterComponent implements OnInit {
 
-  org: any = {};
+  org: any = {
+    address: Address
+  };
 
   latitude: number;
   longitude: number;

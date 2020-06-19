@@ -9,13 +9,38 @@ import {
   NbAlertModule,
   NbButtonModule,
   NbCheckboxModule,
-  NbInputModule
+  NbInputModule,
+  NbStepperModule
 } from '@nebular/theme';
 
 import { NgxLoginComponent } from './components/login/login.component';
 import { NgxRegisterComponent } from './components/register/register.component';
 
 import { AgmCoreModule } from '@agm/core';
+
+const nameReq = {
+  required: true,
+  minLength: 4,
+  maxLength: 50,
+};
+
+const strReq = {
+  required: true,
+  minLength: 4,
+  maxLength: 80,
+};
+
+const strOpt = {
+  required: false,
+  minLength: 4,
+  maxLength: 80,
+};
+
+const phoneReq = {
+  required: false,
+  minLength: 10,
+  maxLength: 10,
+};
 
 @NgModule({
   imports: [
@@ -26,6 +51,7 @@ import { AgmCoreModule } from '@agm/core';
     NbInputModule,
     NbButtonModule,
     NbCheckboxModule,
+    NbStepperModule,
 
     NbAuthModule.forRoot({
       strategies: [
@@ -35,16 +61,17 @@ import { AgmCoreModule } from '@agm/core';
       ],
       forms: {
         validation: {
-          orgName: {
-            required: true,
-            minLength: 4,
-            maxLength: 50,
-          },
-          orgPhone: {
+          fullName: {
             required: false,
-            minLength: 10,
-            maxLength: 10,
           },
+          orgName: nameReq,
+          orgPerson: nameReq,
+          orgBrand: nameReq,
+          orgPhone: phoneReq,
+          orgAltPhone: phoneReq,
+          orgAddressLine1: strReq,
+          orgAddressLine2: strOpt,
+          
         }
       }
     }),
