@@ -14,364 +14,467 @@
   </ul>
 </nb-alert>
 
-<form (ngSubmit)="register()" #form="ngForm" aria-labelledby="title">
-  <nb-stepper orientation="horizontal">
-    <nb-step label="Company Details">
+<nb-stepper #outerStepper linear orientation="horizontal">
+  <nb-step [stepControl]="phoneForm" label="Credentials">
+    <form #phoneForm="ngForm" class="step-container">
       <div class="form-control-group">
-        <label class="label" for="input-org-name">Company/Organization Name:</label>
+        <label class="label" for="input-phone">Phone No.:</label>
         <input nbInput
-               [(ngModel)]="org.name"
-               #email="ngModel"
-               id="input-org-name"
-               name="orgName"
-               placeholder="Company Name"
                fullWidth
-               [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : ''"
-               [required]="getConfigValue('forms.validation.orgName.required')">
-        <ng-container>
-          <p class="error-message">
-            This field is required!
-          </p>
-        </ng-container>
-      </div>
-    
-      <div class="form-control-group">
-        <label class="label" for="input-org-brand">Brand Name:</label>
-        <input nbInput
-               [(ngModel)]="org.brand"
-               #email="ngModel"
-               id="input-org-brand"
-               name="orgBrand"
-               placeholder="Brand Name"
-               fullWidth
-               [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : ''"
-               [required]="getConfigValue('forms.validation.orgBrand.required')">
-        <ng-container>
-          <p class="error-message">
-            This field is required!
-          </p>
-        </ng-container>
-      </div>
-    
-      <div class="form-control-group">
-        <label class="label" for="input-name">Contact Person:</label>
-        <input nbInput
-               [(ngModel)]="org.person"
-               #fullName="ngModel"
-               id="input-org-person"
-               name="orgPerson"
-               placeholder="Full Name"
+               [(ngModel)]="businessModel.phone"
+               name="phone"
+               #phone="ngModel"
+               pattern="^\d{10}$"
+               id="input-phone"
                autofocus
-               fullWidth
-               [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : ''"
-               [required]="getConfigValue('forms.validation.fullName.required')"
-               [minlength]="getConfigValue('forms.validation.fullName.minLength')"
-               [maxlength]="getConfigValue('forms.validation.fullName.maxLength')"
-               [attr.aria-invalid]="fullName.invalid && fullName.touched ? true : null">
-        <ng-container *ngIf="fullName.invalid && fullName.touched">
-          <p class="error-message" *ngIf="fullName.errors?.required">
-            Contact Person Name is required!
+               type="text"
+               placeholder="Phone No."
+               class="form-control"
+               [status]="phone.dirty ? (phone.invalid  ? 'danger' : 'success') : ''"
+               required>
+        <ng-container *ngIf="phone.invalid && phone.touched">
+          <p class="error-message" *ngIf="phone.errors?.required">
+            This field is required!
           </p>
-          <p class="error-message" *ngIf="fullName.errors?.minlength || fullName.errors?.maxlength">
-            Name should contains
-            from {{getConfigValue('forms.validation.fullName.minLength')}}
-            to {{getConfigValue('forms.validation.fullName.maxLength')}}
-            characters
+          <p class="error-message" *ngIf="phone.errors?.pattern">
+            Please enter a valid 10-digit phone number.
           </p>
         </ng-container>
       </div>
-    
-      <div class="form-control-group">
-        <label class="label" for="input-org-phone">Contact Phone No.:</label>
-        <input nbInput
-               [(ngModel)]="org.phone"
-               #email="ngModel"
-               id="input-org-phone"
-               name="orgPhone"
-               placeholder="Phone No."
-               fullWidth
-               [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : ''"
-               [required]="getConfigValue('forms.validation.orgPhone.required')">
-      </div>
-    
-      <div class="form-control-group">
-        <label class="label" for="input-email">Contact Email address:</label>
-        <input nbInput
-               [(ngModel)]="org.email"
-               #email="ngModel"
-               id="input-org-email"
-               name="email"
-               pattern=".+@.+..+"
-               placeholder="Contact Email address"
-               fullWidth
-               [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : ''"
-               [required]="getConfigValue('forms.validation.email.required')"
-               [attr.aria-invalid]="email.invalid && email.touched ? true : null">
-        <ng-container *ngIf="email.invalid && email.touched">
-          <p class="error-message" *ngIf="email.errors?.required">
-            Email is required!
-          </p>
-          <p class="error-message" *ngIf="email.errors?.pattern">
-            Email should be the real one!
-          </p>
-        </ng-container>
-      </div>
-
-      <div class="form-control-group">
-        <label class="label" for="input-org-alt-phone">Alternative Contact:</label>
-        <input nbInput
-               [(ngModel)]="org.altphone"
-               #email="ngModel"
-               id="input-org-alt-phone"
-               name="orgAltPhone"
-               placeholder="Phone No."
-               fullWidth
-               [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : ''"
-               [required]="getConfigValue('forms.validation.orgAltPhone.required')">
-      </div>
-
-      <button nbButton nbStepperNext>next</button>
-    </nb-step>
-    <nb-step label="Location Details">
-
-      <div class="form-control-group">
-        <label class="label" for="search">Location:</label>
-        <input nbInput
-            fullWidth
-            type="text"
-            class="form-control"
-            (keydown.enter)="$event.preventDefault()"
-            placeholder="Search Nearest Location"
-            autocorrect="off"
-            autocapitalize="off"
-            spellcheck="off"
-            #search>
-      </div>
-
-      <div class="form-control-group">
-        <label class="label" for="input-org-address-line1">Address Line 1:</label>
-        <input nbInput
-            fullWidth
-            [(ngModel)]="org.address.line1"
-            type="text"
-            name="orgAddressLine1"
-            id="input-org-address-line1"
-            class="form-control"
-            placeholder="Line 1"
-            autocorrect="off"
-            autocapitalize="off"
-            spellcheck="off">
-      </div>
-
-      <div class="form-control-group">
-        <label class="label" for="input-org-address-line2">Address Line 2:</label>
-        <input nbInput
-            fullWidth
-            [(ngModel)]="org.address.line2"
-            type="text"
-            name="orgAddressLine1"
-            id="input-org-address-line2"
-            class="form-control"
-            placeholder="Line 2"
-            autocorrect="off"
-            autocapitalize="off"
-            spellcheck="off">
-      </div>
-
-      <div class="form-control-group">
-        <label class="label" for="input-org-address-city">City:</label>
-        <input nbInput
-            fullWidth
-            [(ngModel)]="org.address.city"
-            type="text"
-            name="orgAddressCity"
-            id="input-org-address-city"
-            class="form-control"
-            placeholder="City Name"
-            autocorrect="off"
-            autocapitalize="off"
-            spellcheck="off">
-      </div>
-      
-      <div class="form-control-group">
-        <label class="label" for="input-org-address-state">State:</label>
-        <input nbInput
-            fullWidth
-            [(ngModel)]="org.address.state"
-            type="text"
-            name="orgAddressState"
-            id="input-org-address-state"
-            class="form-control"
-            placeholder="State Name"
-            autocorrect="off"
-            autocapitalize="off"
-            spellcheck="off">
-      </div>
-
-      <div class="form-control-group">
-        <label class="label" for="input-org-address-pin">PIN Code:</label>
-        <input nbInput
-            fullWidth
-            [(ngModel)]="org.address.pin"
-            type="number"
-            name="orgAddressPIN"
-            id="input-org-address-pin"
-            class="form-control"
-            placeholder="PIN Code">
-      </div>
-
-      <div class="form-control-group">
-        <label class="label" for="input-org-address-landmark">Landmark:</label>
-        <input nbInput
-            fullWidth
-            [(ngModel)]="org.address.Landmark"
-            type="text"
-            name="orgAddressLandmark"
-            id="input-org-address-landmark"
-            class="form-control"
-            placeholder="Landmark"
-            autocorrect="off"
-            autocapitalize="off"
-            spellcheck="off">
-      </div>
-
-      <div class="form-control-group">
-        <label class="label" for="input-org-address-rad">Delivery Radius:</label>
-        <input nbInput
-            fullWidth
-            [(ngModel)]="org.address.rad"
-            type="number"
-            name="orgAddressRad"
-            id="input-org-address-rad"
-            class="form-control"
-            placeholder="Radius (in KMs)">
-      </div>
-    
-      <agm-map 
-        [latitude]="latitude" 
-        [longitude]="longitude" 
-        [zoom]="zoom" >
-        <agm-marker 
-          [latitude]="latitude" 
-          [longitude]="longitude">
-        </agm-marker>
-      </agm-map>
-
-      <button nbButton nbStepperNext>next</button>
-    </nb-step>
-    
-    <nb-step label="Documents">
-      <div class="form-control-group">
-        <label class="label" for="input-org-doc-reg">Registration:</label>
-        <input
-            fullWidth
-            type="file"
-            name="orgDocReg"
-            id="input-org-doc-reg"
-            class="form-control"
-            placeholder="Reg. Document">
-      </div>
-      <div class="form-control-group">
-        <label class="label" for="input-org-doc-druglic">Drug License:</label>
-        <input
-            fullWidth
-            type="file"
-            name="orgDocReg"
-            id="input-org-doc-reg"
-            class="form-control"
-            placeholder="License Document">
-      </div>
-      <div class="form-control-group">
-        <label class="label" for="input-org-doc-cert">Certificate:</label>
-        <input
-            fullWidth
-            type="file"
-            name="orgDocReg"
-            id="input-org-doc-reg"
-            class="form-control"
-            placeholder="Certificate">
-      </div>
-      <div class="form-control-group">
-        <label class="label" for="input-org-doc-tradelic">Trade License:</label>
-        <input
-            fullWidth
-            type="file"
-            name="orgDocReg"
-            id="input-org-doc-reg"
-            class="form-control"
-            placeholder="License Document">
-      </div>
-      <button nbButton nbStepperNext>next</button>
-    </nb-step>
-
-    <nb-step label="Terms of Service">
-
-      <div class="form-control-group accept-group" *ngIf="getConfigValue('forms.register.terms')">
-        <nb-checkbox name="terms" [(ngModel)]="user.terms" [required]="getConfigValue('forms.register.terms')">
-          Agree to <a href="#" target="_blank"><strong>Terms & Conditions</strong></a>
-        </nb-checkbox>
-      </div>
-
       <button nbButton
-              fullWidth
-              status="success"
-              [disabled]="submitted || !form.valid"
-              [class.btn-pulse]="submitted">
-        Register
-      </button>
-    </nb-step>
-  </nb-stepper>
+          fullWidth
+          status="success"
+          type="submit"
+          (click)="register()"
+          [disabled]="submitted || !phoneForm.valid"
+          [class.btn-pulse]="submitted">next</button>
+    </form>
+  </nb-step>
   
-  <!-- <div class="form-control-group">
-    <label class="label" for="input-password">Password:</label>
-    <input nbInput
-           [(ngModel)]="user.password"
-           #password="ngModel"
-           type="password"
-           id="input-password"
-           name="password"
-           placeholder="Password"
-           fullWidth
-           [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : ''"
-           [required]="getConfigValue('forms.validation.password.required')"
-           [minlength]="getConfigValue('forms.validation.password.minLength')"
-           [maxlength]="getConfigValue('forms.validation.password.maxLength')"
-           [attr.aria-invalid]="password.invalid && password.touched ? true : null">
-    <ng-container *ngIf="password.invalid && password.touched">
-      <p class="error-message" *ngIf="password.errors?.required">
-        Password is required!
-      </p>
-      <p class="error-message" *ngIf="password.errors?.minlength || password.errors?.maxlength">
-        Password should contains
-        from {{ getConfigValue('forms.validation.password.minLength') }}
-        to {{ getConfigValue('forms.validation.password.maxLength') }}
-        characters
-      </p>
-    </ng-container>
-  </div>
-  <div class="form-control-group">
-    <label class="label" for="input-re-password">Repeat password:</label>
-    <input nbInput
-            [(ngModel)]="user.confirmPassword"
-            #rePass="ngModel"
-            type="password"
-            id="input-re-password"
-            name="rePass"
-            placeholder="Confirm Password"
-            fullWidth
-            [status]="email.dirty ? (email.invalid || password.value != rePass.value  ? 'danger' : 'success') : ''"
-            [required]="getConfigValue('forms.validation.password.required')"
-            [attr.aria-invalid]="rePass.invalid && rePass.touched ? true : null">
-    <ng-container *ngIf="rePass.invalid && rePass.touched">
-      <p class="error-message" *ngIf="rePass.errors?.required">
-        Password confirmation is required!
-      </p>
-      <p class="error-message" *ngIf="password.value != rePass.value && !rePass.errors?.required">
-        Password does not match the confirm password.
-      </p>
-    </ng-container>
-  </div> -->
-</form>
+  <nb-step [stepControl]="otpForm" label="Verification">
+    <form #otpForm="ngForm" class="step-container">
+      <div class="form-control-group">
+        <label class="label" for="input-otp">OTP.:</label>
+        <input nbInput
+               fullWidth
+               [(ngModel)]="businessModel.otp"
+               name="otp"
+               #otp="ngModel"
+               id="input-otp"
+               pattern="^\d*$"
+               type="text"
+               placeholder="Enter OTP"
+               class="form-control"
+               [status]="otp.dirty ? (otp.invalid  ? 'danger' : 'success') : ''"
+               required>
+        <ng-container *ngIf="otp.invalid && otp.touched">
+          <p class="error-message" *ngIf="otp.errors?.required">
+            This field is required!
+          </p>
+          <p class="error-message" *ngIf="otp.errors?.pattern">
+            Please enter a valid OTP.
+          </p>
+        </ng-container>
+      </div>
+      <button nbButton
+          fullWidth
+          status="success"
+          type="submit"
+          (click)="verify()"
+          [disabled]="submitted || !otpForm.valid"
+          [class.btn-pulse]="submitted">next</button>
+    </form>
+  </nb-step>
+
+  <nb-step label="Account Creation">
+    <form (ngSubmit)="update()" #innerForm="ngForm" aria-labelledby="title">
+      <nb-stepper #innerStepper orientation="horizontal">
+        <nb-step label="Company Details">
+          <div class="form-control-group">
+            <label class="label" for="input-name">Company/Organization Name:</label>
+            <input nbInput
+                  [(ngModel)]="businessModel.name"
+                  name="name"
+                  #name="ngModel"
+                  id="input-name"
+                  placeholder="Company Name"
+                  fullWidth
+                  [status]="name.dirty ? (name.invalid  ? 'danger' : 'success') : ''"
+                  required>
+            <ng-container *ngIf="name.invalid && name.touched">
+              <p class="error-message" *ngIf="name.errors?.required">
+                This field is required!
+              </p>
+            </ng-container>
+          </div>
+        
+          <div class="form-control-group">
+            <label class="label" for="input-brand">Brand Name:</label>
+            <input nbInput
+                  [(ngModel)]="businessModel.brand"
+                  name="brand"
+                  #brand="ngModel"
+                  id="input-brand"
+                  placeholder="Brand Name"
+                  fullWidth
+                  [status]="brand.dirty ? (brand.invalid  ? 'danger' : 'success') : ''"
+                  required>
+            <ng-container *ngIf="brand.invalid && brand.touched">
+              <p class="error-message" *ngIf="brand.errors?.required">
+                This field is required!
+              </p>
+            </ng-container>
+          </div>
+        
+          <div class="form-control-group">
+            <label class="label" for="input-contact-name">Contact Person:</label>
+            <input nbInput
+                  [(ngModel)]="businessModel.contact.name"
+                  name="contactName"
+                  #contactName="ngModel"
+                  id="input-contact-name"
+                  placeholder="Full Name"
+                  fullWidth
+                  [status]="contactName.dirty ? (contactName.invalid  ? 'danger' : 'success') : ''"
+                  required>
+            <ng-container *ngIf="contactName.invalid && contactName.touched">
+              <p class="error-message" *ngIf="contactName.errors?.required">
+                Contact Person Name is required!
+              </p>
+            </ng-container>
+          </div>
+        
+          <div class="form-control-group">
+            <label class="label" for="input-contact-phone">Contact Phone No.:</label>
+            <input nbInput
+                  [(ngModel)]="businessModel.contact.phone"
+                  name="contactPhone"
+                  #contactPhone="ngModel"
+                  id="input-contact-phone"
+                  pattern="^\d{10}$"
+                  placeholder="Phone No."
+                  fullWidth
+                  [status]="contactPhone.dirty ? (contactPhone.invalid  ? 'danger' : 'success') : ''"
+                  required>
+            <ng-container *ngIf="contactPhone.invalid && contactPhone.touched">
+              <p class="error-message" *ngIf="contactPhone.errors?.required">
+                Contact Person Name is required!
+              </p>
+              <p class="error-message" *ngIf="contactPhone.errors?.pattern">
+                Please enter a valid OTP.
+              </p>
+            </ng-container>
+          </div>
+        
+          <div class="form-control-group">
+            <label class="label" for="input-contact-email">Contact Email address:</label>
+            <input nbInput
+                  [(ngModel)]="businessModel.contact.email"
+                  name="contactEmail"
+                  #contactEmail="ngModel"
+                  id="input-contact-email"
+                  name="contactEmail"
+                  pattern=".+@.+..+"
+                  placeholder="Contact Email address"
+                  fullWidth
+                  [status]="contactEmail.dirty ? (contactEmail.invalid  ? 'danger' : 'success') : ''"
+                  required
+                  [attr.aria-invalid]="contactEmail.invalid && contactEmail.touched ? true : null">
+            <ng-container *ngIf="contactEmail.invalid && contactEmail.touched">
+              <p class="error-message" *ngIf="contactEmail.errors?.required">
+                Email is required!
+              </p>
+              <p class="error-message" *ngIf="contactEmail.errors?.pattern">
+                Email should be a valid e-mail address.
+              </p>
+            </ng-container>
+          </div>
+
+          <div class="form-control-group">
+            <label class="label" for="input-contact-alt-phone">Alternative Contact:</label>
+            <input nbInput
+                  [(ngModel)]="businessModel.contact.altPhone"
+                  name="contactAltPhone"
+                  #contactAltPhone="ngModel"
+                  id="input-contact-alt-phone"
+                  pattern="^$d{10}$"
+                  placeholder="Phone No."
+                  fullWidth
+                  [status]="contactAltPhone.dirty ? (contactAltPhone.invalid  ? 'danger' : 'success') : ''">
+            <ng-container *ngIf="contactAltPhone.invalid && contactAltPhone.touched">
+              <p class="error-message" *ngIf="contactAltPhone.errors?.pattern">
+                Alt. phone No. should be a valid 10-digit phone number.
+              </p>
+            </ng-container>
+          </div>
+
+          <button nbButton nbStepperNext>next</button>
+        </nb-step>
+        <nb-step label="Location Details">
+          <div class="form-control-group">
+            <label class="label" for="search">Location:</label>
+            <input nbInput
+                fullWidth
+                type="text"
+                class="form-control"
+                (keydown.enter)="$event.preventDefault()"
+                placeholder="Search Nearest Location"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="off"
+                #search>
+          </div>
+
+          <div class="form-control-group">
+            <label class="label" for="input-address-line1">Address Line 1:</label>
+            <input nbInput
+                fullWidth
+                [(ngModel)]="businessModel.address.line1"
+                name="addressLine1"
+                #addressLine1="ngModel"
+                type="text"
+                id="input-address-line1"
+                class="form-control"
+                placeholder="Line 1"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="off"
+                [status]="addressLine1.dirty ? (addressLine1.invalid  ? 'danger' : 'success') : ''"
+                required>
+            <ng-container *ngIf="addressLine1.invalid && addressLine1.touched">
+              <p class="error-message" *ngIf="addressLine1.errors?.required">
+                This field is required!
+              </p>
+            </ng-container>
+          </div>
+
+          <div class="form-control-group">
+            <label class="label" for="input-address-line2">Address Line 2:</label>
+            <input nbInput
+                fullWidth
+                [(ngModel)]="businessModel.address.line2"
+                name="addressLine2"
+                type="text"
+                id="input-address-line2"
+                class="form-control"
+                placeholder="Line 2"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="off">
+          </div>
+
+          <div class="form-control-group">
+            <label class="label" for="input-address-city">City:</label>
+            <input nbInput
+                fullWidth
+                [(ngModel)]="businessModel.address.city"
+                name="addressCity"
+                #addressCity="ngModel"
+                type="text"
+                id="input-address-city"
+                class="form-control"
+                placeholder="City Name"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="off"
+                [status]="addressCity.dirty ? (addressCity.invalid  ? 'danger' : 'success') : ''"
+                required>
+            <ng-container *ngIf="addressCity.invalid && addressCity.touched">
+              <p class="error-message" *ngIf="addressCity.errors?.required">
+                This field is required!
+              </p>
+            </ng-container>
+          </div>
+          
+          <div class="form-control-group">
+            <label class="label" for="input-address-state">State:</label>
+            <input nbInput
+                fullWidth
+                [(ngModel)]="businessModel.address.state"
+                name="addressState"
+                #addressState="ngModel"
+                type="text"
+                id="input-address-state"
+                class="form-control"
+                placeholder="State Name"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="off"
+                [status]="addressState.dirty ? (addressState.invalid  ? 'danger' : 'success') : ''"
+                required>
+            <ng-container *ngIf="addressState.invalid && addressState.touched">
+              <p class="error-message" *ngIf="addressState.errors?.required">
+                This field is required!
+              </p>
+            </ng-container>
+          </div>
+
+          <div class="form-control-group">
+            <label class="label" for="input-address-pin">PIN Code:</label>
+            <input nbInput
+                fullWidth
+                [(ngModel)]="businessModel.address.PIN"
+                name="addressPIN"
+                #addressPIN="ngModel"
+                type="number"
+                id="input-address-pin"
+                class="form-control"
+                placeholder="PIN Code"
+                [status]="addressPIN.dirty ? (addressPIN.invalid  ? 'danger' : 'success') : ''"
+                required>
+            <ng-container *ngIf="addressPIN.invalid && addressPIN.touched">
+              <p class="error-message" *ngIf="addressPIN.errors?.required">
+                This field is required!
+              </p>
+            </ng-container>
+          </div>
+
+          <div class="form-control-group">
+            <label class="label" for="input-address-landmark">Landmark:</label>
+            <input nbInput
+                fullWidth
+                [(ngModel)]="businessModel.address.landmark"
+                name="addressLandmark"
+                type="text"
+                id="input-address-landmark"
+                class="form-control"
+                placeholder="Landmark"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="off">
+          </div>
+
+          <div class="form-control-group">
+            <label class="label" for="input-address-rad">Delivery Radius:</label>
+            <input nbInput
+                fullWidth
+                [(ngModel)]="businessModel.address.deliveryRadius"
+                name="addressRadius"
+                #addressRadius="ngModel"
+                type="number"
+                name="addressDeliveryRadius"
+                id="input-address-rad"
+                class="form-control"
+                placeholder="Radius (in km)"
+                [status]="addressRadius.dirty ? (addressRadius.invalid  ? 'danger' : 'success') : ''"
+                required>
+            <ng-container *ngIf="addressRadius.invalid && addressRadius.touched">
+              <p class="error-message" *ngIf="addressRadius.errors?.required">
+                This field is required!
+              </p>
+            </ng-container>
+          </div>
+        
+          <agm-map 
+            [latitude]="businessModel.address.geolocation.latitude" 
+            [longitude]="businessModel.address.geolocation.longitude"
+            [zoom]="zoom" >
+            <agm-marker 
+              [latitude]="businessModel.address.geolocation.latitude" 
+              [longitude]="businessModel.address.geolocation.longitude">
+            </agm-marker>
+          </agm-map>
+
+          <button nbButton nbStepperNext>next</button>
+        </nb-step>
+        
+        <nb-step label="Documents">
+          <div class="form-control-group">
+            <label class="label" for="input-org-doc-reg">Registration:</label>
+            <input
+                fullWidth
+                #docReg
+                (change)="onDocumentChange('registration', $event)"
+                type="file"
+                name="registration"
+                id="input-org-doc-reg"
+                class="form-control"
+                placeholder="Reg. Document"
+                required>
+            <ng-container *ngIf="docReg.invalid && docReg.touched">
+              <p class="error-message" *ngIf="docReg.errors?.required">
+                This field is required!
+              </p>
+            </ng-container>
+          </div>
+          <div class="form-control-group">
+            <label class="label" for="input-org-doc-druglic">Drug License:</label>
+            <input
+                fullWidth
+                #docDrugLic
+                (change)="onDocumentChange('drugLicense', $event)"
+                type="file"
+                name="drugLicense"
+                id="input-org-doc-reg"
+                class="form-control"
+                placeholder="License Document"
+                required>
+            <ng-container *ngIf="docDrugLic.invalid && docDrugLic.touched">
+              <p class="error-message" *ngIf="docDrugLic.errors?.required">
+                This field is required!
+              </p>
+            </ng-container>
+          </div>
+          <div class="form-control-group">
+            <label class="label" for="input-org-doc-cert">Certificate:</label>
+            <input
+                fullWidth
+                #docCert
+                (change)="onDocumentChange('certificate', $event)"
+                type="file"
+                name="certificate"
+                id="input-org-doc-reg"
+                class="form-control"
+                placeholder="Certificate"
+                required>
+            <ng-container *ngIf="docCert.invalid && docCert.touched">
+              <p class="error-message" *ngIf="docCert.errors?.required">
+                This field is required!
+              </p>
+            </ng-container>
+          </div>
+          <div class="form-control-group">
+            <label class="label" for="input-org-doc-tradelic">Trade License:</label>
+            <input
+                fullWidth
+                #docTradeLic
+                (change)="onDocumentChange('tradeLicense', $event)"
+                type="file"
+                name="tradeLicense"
+                id="input-org-doc-reg"
+                class="form-control"
+                placeholder="License Document"
+                required>
+            <ng-container *ngIf="docTradeLic.invalid && docTradeLic.touched">
+              <p class="error-message" *ngIf="docTradeLic.errors?.required">
+                This field is required!
+              </p>
+            </ng-container>
+          </div>
+          <button nbButton nbStepperNext>next</button>
+        </nb-step>
+
+        <nb-step label="Terms of Service">
+
+          <div class="form-control-group accept-group">
+            <nb-checkbox name="terms" [(ngModel)]="terms" required>
+              Agree to <a href="#" target="_blank"><strong>Terms & Conditions</strong></a>
+            </nb-checkbox>
+          </div>
+
+          <button nbButton
+                  fullWidth
+                  status="success"
+                  type="submit"
+                  [disabled]="submitted || !innerForm.valid"
+                  [class.btn-pulse]="submitted">
+            Register
+          </button>
+        </nb-step>
+      </nb-stepper>
+    </form>
+  </nb-step>
+</nb-stepper>
 
 <section *ngIf="socialLinks && socialLinks.length > 0" class="links" aria-label="Social sign in">
   or enter with:
