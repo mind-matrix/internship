@@ -12,9 +12,9 @@
   "scripts": {
     "ng": "ng",
     "conventional-changelog": "conventional-changelog",
-    "start": "ng serve --proxy-config proxy.config.json",
-    "serve": "nodemon server/index.js --watch server",
-    "start:serve": "start npm run start & start npm run serve",
+    "start:ng": "ng serve --proxy-config proxy.config.json",
+    "start:server": "nodemon server/index.js --watch server",
+    "start": "start npm run start:ng & start npm run start:server",
     "build": "ng build",
     "build:prod": "npm run build -- --prod --aot",
     "test": "ng test",
