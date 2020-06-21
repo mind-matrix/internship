@@ -1,14 +1,16 @@
 import { Component, OnInit, NgZone, ViewChild, ElementRef, Inject, ChangeDetectorRef } from '@angular/core';
 import { NbRegisterComponent, NbAuthService, NB_AUTH_OPTIONS } from '@nebular/auth';
 
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
 import { MapsAPILoader, MouseEvent } from '@agm/core';
 import { Router } from '@angular/router';
 
 import { Business } from './business';
 
 import axios from 'axios';
+import { Store, Select } from '@ngxs/store';
+import { SetToken } from '../../../shared/app.actions';
+import { AppState } from '../../../shared/app.state';
+import { Navigate } from '@ngxs/router-plugin';
 
 @Component({
   selector: 'ngx-register',
@@ -21,9 +23,12 @@ export class NgxRegisterComponent extends NbRegisterComponent implements OnInit 
   @ViewChild('innerStepper') innerStepper;
 
   businessModel = new Business();
+  state: any;
   zoom: number;
   terms: boolean = false;
-  private token: string = null;
+
+  @Select(AppState) app$;
+  
   private geoCoder;
 
   @ViewChild('search')
@@ -37,8 +42,12 @@ export class NgxRegisterComponent extends NbRegisterComponent implements OnInit 
     protected router: Router,
     private mapsAPILoader: MapsAPILoader,
     private ngZone: NgZone,
+    private store: Store
   ) {
     super(service, options, cd, router);
+    this.app$.subscribe(e => {
+      this.state = e;
+    });
   }
 
   register() {
@@ -72,7 +81,9 @@ export class NgxRegisterComponent extends NbRegisterComponent implements OnInit 
       }
     }).then(({ data }) => {
       if (data.verified && data.token) {
-        this.token = data.token;
+        this.store.dispatch([
+          new SetToken(data.token)
+        ]);
         this.outerStepper.next();
       } else {
         // not verified and wrong otp
@@ -94,11 +105,16 @@ export class NgxRegisterComponent extends NbRegisterComponent implements OnInit 
       data.append(key, this.businessModel.documents[key]);
     }
 
+    console.log(this.state.token);
+
     axios.post('/api/update', data, {
-      headers: { 'Content-Type': 'multipart/form-data', 'authorization': this.token }
+      responseType: 'json',
+      headers: { 'Content-Type': 'multipart/form-data', 'authorization': this.state.token }
     }).then(({ data }) => {
       if (data.updated) {
-        this.router.navigate(['/pages/dashboard']);
+        this.store.dispatch([
+          new Navigate(['pages/dashboard']),
+        ]);
       }
     }).catch((error) => {
       console.log(error);

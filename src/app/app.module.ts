@@ -21,6 +21,13 @@ import {
   NbWindowModule,
 } from '@nebular/theme';
 
+import { NgxsModule } from '@ngxs/store';
+import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
+import { NgxsStoragePluginModule, StorageOption } from '@ngxs/storage-plugin';
+
+import { AuthGuard } from './auth.guard';
+import { AppState } from './shared/app.state';
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -39,7 +46,15 @@ import {
     }),
     CoreModule.forRoot(),
     ThemeModule.forRoot(),
+    NgxsModule.forRoot([
+      AppState
+    ]),
+    NgxsRouterPluginModule.forRoot(),
+    NgxsStoragePluginModule.forRoot({
+      storage: StorageOption.SessionStorage
+    }),
   ],
+  providers: [AuthGuard],
   bootstrap: [AppComponent],
 })
 export class AppModule {

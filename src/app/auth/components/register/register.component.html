@@ -197,7 +197,7 @@
                   name="contactAltPhone"
                   #contactAltPhone="ngModel"
                   id="input-contact-alt-phone"
-                  pattern="^$d{10}$"
+                  pattern="^\d{10}$"
                   placeholder="Phone No."
                   fullWidth
                   [status]="contactAltPhone.dirty ? (contactAltPhone.invalid  ? 'danger' : 'success') : ''">
@@ -383,7 +383,8 @@
             <label class="label" for="input-org-doc-reg">Registration:</label>
             <input
                 fullWidth
-                #docReg
+                ngModel
+                #docReg="ngModel"
                 (change)="onDocumentChange('registration', $event)"
                 type="file"
                 name="registration"
@@ -401,7 +402,8 @@
             <label class="label" for="input-org-doc-druglic">Drug License:</label>
             <input
                 fullWidth
-                #docDrugLic
+                ngModel
+                #docDrugLic="ngModel"
                 (change)="onDocumentChange('drugLicense', $event)"
                 type="file"
                 name="drugLicense"
@@ -419,7 +421,8 @@
             <label class="label" for="input-org-doc-cert">Certificate:</label>
             <input
                 fullWidth
-                #docCert
+                ngModel
+                #docCert="ngModel"
                 (change)="onDocumentChange('certificate', $event)"
                 type="file"
                 name="certificate"
@@ -437,7 +440,8 @@
             <label class="label" for="input-org-doc-tradelic">Trade License:</label>
             <input
                 fullWidth
-                #docTradeLic
+                ngModel
+                #docTradeLic="ngModel"
                 (change)="onDocumentChange('tradeLicense', $event)"
                 type="file"
                 name="tradeLicense"
@@ -466,7 +470,7 @@
                   fullWidth
                   status="success"
                   type="submit"
-                  [disabled]="submitted || !innerForm.valid"
+                  [disabled]="submitted || !innerForm.valid || !terms"
                   [class.btn-pulse]="submitted">
             Register
           </button>

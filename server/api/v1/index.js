@@ -19,15 +19,42 @@ router.get('/', (req, res) => {
 
 router.post('/register', async function (req, res) {
   const phone = req.body.phone;
-  const business = new Business({
-    phone
-  });
-  await business.save();
-  const sent = business.sendOtp();
-  res.status(200).send({
-    created: true,
-    sent
-  });
+  let business = await Business.findOne({ phone });
+  if(!business) {
+    const business = new Business({
+      phone
+    });
+    await business.save();
+    const sent = business.sendOtp();
+    res.status(200).send({
+      created: true,
+      sent
+    });
+  } else if (!business.verified) {
+    const sent = business.sendOtp();
+    res.status(200).send({
+      created: true,
+      sent
+    });
+  } else {
+    res.status(200).send({
+      created: false,
+      sent: false
+    });
+  }
+});
+
+router.post('/request', async function (req, res) {
+  const phone = req.body.phone;
+  let business = await Business.findOne({ phone });
+  if (!business) {
+    res.status(404).send();
+  } else {
+    const sent = business.sendOtp();
+    res.status(200).send({
+      sent
+    });
+  }
 });
 
 router.post('/login', async function (req, res) {

@@ -14,74 +14,78 @@
     <li *ngFor="let message of messages" class="alert-message">{{ message }}</li>
   </ul>
 </nb-alert>
-
-<form (ngSubmit)="login()" #form="ngForm" aria-labelledby="title">
-
-  <div class="form-control-group">
-    <label class="label" for="input-email">Email address:</label>
-    <input nbInput
-           fullWidth
-           [(ngModel)]="user.email"
-           #email="ngModel"
-           name="email"
-           id="input-email"
-           pattern=".+@.+\..+"
-           placeholder="Email address"
-           autofocus
-           [status]="email.dirty ? (email.invalid  ? 'danger' : 'success') : ''"
-           [required]="getConfigValue('forms.validation.email.required')"
-           [attr.aria-invalid]="email.invalid && email.touched ? true : null">
-    <ng-container *ngIf="email.invalid && email.touched">
-      <p class="error-message" *ngIf="email.errors?.required">
-        Email is required!
-      </p>
-      <p class="error-message" *ngIf="email.errors?.pattern">
-        Email should be the real one!
-      </p>
-    </ng-container>
-  </div>
-
-  <div class="form-control-group">
-    <label class="label" for="input-password">Password:</label>
-    <input nbInput
-           fullWidth
-           [(ngModel)]="user.password"
-           #password="ngModel"
-           name="password"
-           type="password"
-           id="input-password"
-           placeholder="Password"
-           [status]="password.dirty ? (password.invalid  ? 'danger' : 'success') : ''"
-           [required]="getConfigValue('forms.validation.password.required')"
-           [minlength]="getConfigValue('forms.validation.password.minLength')"
-           [maxlength]="getConfigValue('forms.validation.password.maxLength')"
-           [attr.aria-invalid]="password.invalid && password.touched ? true : null">
-    <ng-container *ngIf="password.invalid && password.touched ">
-      <p class="error-message" *ngIf="password.errors?.required">
-        Password is required!
-      </p>
-      <p class="error-message" *ngIf="password.errors?.minlength || password.errors?.maxlength">
-        Password should contains
-        from {{ getConfigValue('forms.validation.password.minLength') }}
-        to {{ getConfigValue('forms.validation.password.maxLength') }}
-        characters
-      </p>
-    </ng-container>
-  </div>
-
-  <div class="form-control-group accept-group">
-    <nb-checkbox name="rememberMe" [(ngModel)]="user.rememberMe" *ngIf="rememberMe">Remember me</nb-checkbox>
-    <a class="forgot-password" routerLink="../request-password">Forgot Password?</a>
-  </div>
-
-  <button nbButton
+<nb-stepper #loginStepper linear orientation="horizontal">
+  <nb-step [stepControl]="phoneForm" label="Credentials">
+    <form #phoneForm="ngForm" class="step-container">
+      <div class="form-control-group">
+        <label class="label" for="input-phone">Phone No.:</label>
+        <input nbInput
+               fullWidth
+               [(ngModel)]="businessModel.phone"
+               name="phone"
+               #phone="ngModel"
+               pattern="^\d{10}$"
+               id="input-phone"
+               autofocus
+               type="text"
+               placeholder="Phone No."
+               class="form-control"
+               [status]="phone.dirty ? (phone.invalid  ? 'danger' : 'success') : ''"
+               required>
+        <ng-container *ngIf="phone.invalid && phone.touched">
+          <p class="error-message" *ngIf="phone.errors?.required">
+            This field is required!
+          </p>
+          <p class="error-message" *ngIf="phone.errors?.pattern">
+            Please enter a valid 10-digit phone number.
+          </p>
+        </ng-container>
+      </div>
+      <button nbButton
           fullWidth
           status="success"
-          [disabled]="submitted || !form.valid"
-          [class.btn-pulse]="submitted">
-    Log In
-  </button>
-</form>
+          type="submit"
+          (click)="request()"
+          [disabled]="submitted || !phoneForm.valid"
+          [class.btn-pulse]="submitted">next</button>
+    </form>
+  </nb-step>
+  
+  <nb-step [stepControl]="otpForm" label="Verification">
+    <form #otpForm="ngForm" class="step-container">
+      <div class="form-control-group">
+        <label class="label" for="input-otp">OTP.:</label>
+        <input nbInput
+               fullWidth
+               [(ngModel)]="businessModel.otp"
+               name="otp"
+               #otp="ngModel"
+               id="input-otp"
+               pattern="^\d*$"
+               type="text"
+               placeholder="Enter OTP"
+               class="form-control"
+               [status]="otp.dirty ? (otp.invalid  ? 'danger' : 'success') : ''"
+               required>
+        <ng-container *ngIf="otp.invalid && otp.touched">
+          <p class="error-message" *ngIf="otp.errors?.required">
+            This field is required!
+          </p>
+          <p class="error-message" *ngIf="otp.errors?.pattern">
+            Please enter a valid OTP.
+          </p>
+        </ng-container>
+      </div>
+      <button nbButton
+          fullWidth
+          status="success"
+          type="submit"
+          (click)="login()"
+          [disabled]="submitted || !otpForm.valid"
+          [class.btn-pulse]="submitted">next</button>
+    </form>
+  </nb-step>
+</nb-stepper>
 
 <section *ngIf="socialLinks && socialLinks.length > 0" class="links" aria-label="Social sign in">
   or enter with:
