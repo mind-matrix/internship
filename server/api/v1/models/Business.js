@@ -21,6 +21,10 @@ const BusinessSchema = new Schema({
     brand: {
         type: String,
     },
+    category: {
+        type: String,
+        enum: ['Lab','Medicine','Both']
+    },
     contact: {
         name: String,
         phone: String,

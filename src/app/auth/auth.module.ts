@@ -10,7 +10,8 @@ import {
   NbButtonModule,
   NbCheckboxModule,
   NbInputModule,
-  NbStepperModule
+  NbStepperModule,
+  NbSelectModule,
 } from '@nebular/theme';
 
 import { NgxLoginComponent } from './components/login/login.component';
@@ -52,6 +53,7 @@ const phoneReq = {
     NbButtonModule,
     NbCheckboxModule,
     NbStepperModule,
+    NbSelectModule,
 
     NbAuthModule.forRoot({
       strategies: [

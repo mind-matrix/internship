@@ -27,6 +27,7 @@ export class Business {
         public otp: string = null,
         public name: string = null,
         public brand: string = null,
+        public category: string = null,
         public contact: Contact = {
             name: null,
             phone: null,
