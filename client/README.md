@@ -1,48 +1,12 @@
 # Installation
 Install all modules -
 ```bash
-cd client
-npm install
-cd..
-cd server
 npm install
 ```
-
-# Development Deloy
 Run server -
 ```bash
-cd server
 npm start
 ```
-Run client -
-```bash
-cd client
-npm start
-```
-
-# Production Deploy
-Bundle Client -
-```bash
-cd client
-npm build
-```
-The output will be generated into the dist folder inside `client/` directory. Copy all contents of dist to the `public/` folder in server. Then run the server.
-Run Server -
-```bash
-cd server
-npm start
-```
-
-# Configure
-
--   # Changing MongoDB Connection URL
-    Open `.env` file in `server/` and change the value for `DB_URL` field as
-    `DB_URL=<YOUR URL>` (ex. `DB_URL=mongodb://localhost:27017/mydatabase`)
--   # Changing Server Deploy Port
-    For production, you only need to do the following -
-    Open `.env` file in `server/` and change the value for `PORT` to the desired port number.
-    Additionally, for development, you also need to do the following -
-    Open `proxy.config.json` file in `client/` directory and change the value for "target" inside "/api/*" to the correct url. For example, if the port is 5000, set "target" to "http://localhost:5000".
 
 # PROJECT: Uses ngx-admin [<img src="https://i.imgur.com/oMcxwZ0.png" alt="Eva Design System" height="20px" />](https://hubs.ly/H0n4ZDy0) [![Build Status](https://travis-ci.org/akveo/ngx-admin.svg?branch=master)](https://travis-ci.org/akveo/ngx-admin)
 

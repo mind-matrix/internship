@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const { readFileSync } = require('fs');
 
-const publicKey = readFileSync('../public.key');
+const publicKey = readFileSync(`${__dirname}/../../../public.key`);
 
 module.exports = function (req, res, next) {
     let token = req.headers.authorization;

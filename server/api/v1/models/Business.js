@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 const jwt = require('jsonwebtoken');
 const { readFileSync } = require('fs');
 
-const privateKey = readFileSync('../private.key');
+const privateKey = readFileSync(`${__dirname}/../../../private.key`);
 
 const BusinessSchema = new Schema({
     phone: {
