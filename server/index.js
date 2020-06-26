@@ -4,10 +4,6 @@ const express = require('express');
 const path = require('path');
 const http = require('http');
 
-console.log(process.env.DB_URL);
-
-const { connect } = require('mongoose');
-
 // Get our API routes
 const api = require('./api/v1');
 
@@ -31,7 +27,4 @@ const server = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
-
-connect(process.env.DB_URL, { useNewUrlParser: true }).then(() => {
-    server.listen(port, () => console.log(`API running on localhost:${port}`));
-});
+server.listen(port, () => console.log(`API running on localhost:${port}`));

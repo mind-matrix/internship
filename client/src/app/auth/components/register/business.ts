@@ -11,7 +11,8 @@ export class Contact {
 }
 
 export class Address {
-    geolocation: Geolocation;
+    latitude: number;
+    longitude: number;
     line1: string;
     line2: string;
     city: string;
@@ -35,10 +36,8 @@ export class Business {
             altPhone: null,
         },
         public address: Address = {
-            geolocation: {
-                latitude: 0,
-                longitude: 0,
-            },
+            latitude: 0,
+            longitude: 0,
             line1: null,
             line2: null,
             city: null,

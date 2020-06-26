@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 
 const auth = require('./controllers/auth');
 
-const { Business } = require('./models');
+const { Business, Document, Contact, Address } = require('./models');
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -23,6 +23,8 @@ router.post('/register', async function (req, res) {
   if(!business) {
     const business = new Business({
       phone
+    }, {
+      include: [ Contact, Address, Document ]
     });
     await business.save();
     const sent = business.sendOtp();
@@ -100,12 +102,12 @@ router.post('/update', auth, upload.fields([
   data.contact = JSON.parse(req.body.contact);
   data.address = JSON.parse(req.body.address);
   
-  data.documents = {
-    registration: req.files.registration[0],
-    drugLicense: req.files.drugLicense[0],
-    certificate: req.files.certificate[0],
-    tradeLicense: req.files.tradeLicense[0]
-  };
+  data.documents = [
+    req.files.registration[0],
+    req.files.drugLicense[0],
+    req.files.certificate[0],
+    req.files.tradeLicense[0]
+  ];
 
   let business = await Business.findOne({ phone });
   await business.update(data);

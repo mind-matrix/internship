@@ -140,8 +140,8 @@ export class NgxRegisterComponent extends NbRegisterComponent implements OnInit 
           }
 
           // set latitude, longitude and zoom
-          this.businessModel.address.geolocation.latitude = place.geometry.location.lat();
-          this.businessModel.address.geolocation.longitude = place.geometry.location.lng();
+          this.businessModel.address.latitude = place.geometry.location.lat();
+          this.businessModel.address.longitude = place.geometry.location.lng();
           this.zoom = 12;
         });
       });
@@ -157,11 +157,11 @@ export class NgxRegisterComponent extends NbRegisterComponent implements OnInit 
   // Get Current Location Coordinates
   private setCurrentLocation() {
     if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        this.businessModel.address.geolocation.latitude = position.coords.latitude;
-        this.businessModel.address.geolocation.longitude = position.coords.longitude;
+      navigator.getCurrentPosition((position) => {
+        this.businessModel.address.latitude = position.coords.latitude;
+        this.businessModel.address.longitude = position.coords.longitude;
         this.zoom = 8;
-        this.getAddress(this.businessModel.address.geolocation.latitude, this.businessModel.address.geolocation.longitude);
+        this.getAddress(this.businessModel.address.latitude, this.businessModel.address.longitude);
       });
     }
   }
@@ -169,9 +169,9 @@ export class NgxRegisterComponent extends NbRegisterComponent implements OnInit 
 
   markerDragEnd($event: MouseEvent) {
     console.log($event);
-    this.businessModel.address.geolocation.latitude = $event.coords.lat;
-    this.businessModel.address.geolocation.longitude = $event.coords.lng;
-    this.getAddress(this.businessModel.address.geolocation.latitude, this.businessModel.address.geolocation.longitude);
+    this.businessModel.address.latitude = $event.coords.lat;
+    this.businessModel.address.longitude = $event.coords.lng;
+    this.getAddress(this.businessModel.address.latitude, this.businessModel.address.longitude);
   }
 
   getAddress(latitude, longitude) {
