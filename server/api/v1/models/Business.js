@@ -15,7 +15,7 @@ class Business extends Model {
     verifyOtp = function () {
         // code to send OTP goes here
         console.log(`Verified OTP for ${this.phone}`);
-        return jwt.sign({ exp: Math.floor(Date.now() / 1000) + (60 * 60), data: { phone: this.phone } }, privateKey, { algorithm: 'RS256'});
+        return jwt.sign({ exp: Math.floor(Date.now() / 1000) + (60 * 60), data: { id: this.id, phone: this.phone } }, privateKey, { algorithm: 'RS256'});
     }
 }
 

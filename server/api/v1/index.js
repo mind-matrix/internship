@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 
 const auth = require('./controllers/auth');
 
-const { Business, Document, Contact, Address } = require('./models');
+const { Business, Document, Contact, Address, BusinessTest, Test } = require('./models');
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -19,13 +19,11 @@ router.get('/', (req, res) => {
 
 router.post('/register', async function (req, res) {
   const phone = req.body.phone;
-  let business = await Business.findOne({ phone });
+  let business = await Business.findOne({ where: { phone } });
   if(!business) {
     const business = new Business({
       phone
-    }, {
-      include: [ Contact, Address, Document ]
-    });
+    }, { include: [ Contact, Address, { model: Document, as: 'documents' } ] });
     await business.save();
     const sent = business.sendOtp();
     res.status(200).send({
@@ -48,7 +46,7 @@ router.post('/register', async function (req, res) {
 
 router.post('/request', async function (req, res) {
   const phone = req.body.phone;
-  let business = await Business.findOne({ phone });
+  let business = await Business.findOne({ where: { phone } });
   if (!business) {
     res.status(404).send();
   } else {
@@ -62,7 +60,7 @@ router.post('/request', async function (req, res) {
 router.post('/login', async function (req, res) {
   const phone = req.body.phone;
   const otp = req.body.otp;
-  let business = await Business.findOne({ phone });
+  let business = await Business.findOne({ where: { phone } });
   if (business) {
     token = business.verifyOtp(otp);
     if (token) {
@@ -93,29 +91,134 @@ router.post('/update', auth, upload.fields([
 ]), async function (req, res) {
 
   const phone = req.context.data.phone;
-  
-  let data = {
-    name: req.body.name,
-    brand: req.body.brand
-  };
-  
-  data.contact = JSON.parse(req.body.contact);
-  data.address = JSON.parse(req.body.address);
-  
-  data.documents = [
-    req.files.registration[0],
-    req.files.drugLicense[0],
-    req.files.certificate[0],
-    req.files.tradeLicense[0]
-  ];
 
-  let business = await Business.findOne({ phone });
-  await business.update(data);
+  let business = await Business.findOne({ where: { phone } });
+
+  if (req.body.name) {
+    business.name = req.body.name;
+  }
+  if (req.body.brand) {
+    business.brand = req.body.brand;
+  }
+  if (req.body.category) {
+    business.category = req.body.category;
+  }
+
+  if (req.body.contact) {
+    let contact = new Contact(JSON.parse(req.body.contact));
+    await contact.save();
+    business.setContact(contact);
+  }
+
+  if (req.body.address) {
+    let address = new Address(JSON.parse(req.body.address));
+    await address.save();
+    business.setAddress(address);
+  }
+
+  if (req.files) {
+    console.log(req.files);
+    let document_ids = [];
+
+    for (document of ["registration", "drugLicense", "certificate", "tradeLicense"]) {
+      if (req.files[document]) {
+        let doc = new Document(req.files[document][0]);
+        await doc.save();
+        document_ids.push(doc.id);
+      }
+    }
+
+    if (document_ids.length > 0) {
+      business.setDocuments(document_ids);
+    }
+  }
+
+  if (req.body.tests) {
+    
+    if (req.body.tests.add) {
+      for (t of req.body.tests.add) {
+        let test = new BusinessTest(t);
+        await test.save();
+        business.addTest(test);
+      }
+    }
+
+    if (req.body.tests.remove) {
+      // do something
+    }
+
+  }
+
   await business.save();
   
   res.status(200).send({
     updated: true
   });
+});
+
+router.get('/me', auth, async function (req, res) {
+  const phone = req.context.data.phone;
+
+  let business = await Business.findOne({
+    where: { phone },
+    include: [
+      Contact,
+      Address,
+      { model: Document, as: 'documents' },
+      { model: BusinessTest, as: 'tests', include: [ Test ] }
+    ]
+  });
+
+  res.send(business.toJSON());
+});
+
+router.get('/entity/test', async function (req, res) {
+  let tests = await Test.findAll();
+  res.send(tests.map((node) => node.get({ plain: true })));
+});
+
+router.post('/entity/test/:id', auth, async function (req, res) {
+
+  let id = req.context.data.id;
+  let testId = req.params.id;
+  let price = req.body.price;
+
+  let test = await BusinessTest.findOne({
+    where: {
+      id: testId,
+      BusinessId: id
+    }
+  });
+
+  if (test) {
+    test.price = price;
+    await test.save();
+    res.send({
+      updated: true
+    });
+  } else  {
+    res.status(404).send();
+  }
+});
+
+router.delete('/entity/test/:id', auth, async function (req, res) {
+  let id = req.context.data.id;
+  let testId = req.params.id;
+
+  let nrows = await BusinessTest.destroy({
+    where: {
+      id: testId,
+      BusinessId: id
+    }
+  });
+
+  if (nrows > 0) {
+    res.send({
+      deleted: true
+    });
+  } else {
+    res.status(500).send();
+  }
 });
 
 module.exports = router;

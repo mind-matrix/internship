@@ -1,0 +1,92 @@
+<div class="row">
+    <div class="col-xxxl-3 col-md-6">
+        <nb-card>
+            <nb-card-header>Add Test</nb-card-header>
+            <nb-card-body>
+                <form #addTest="ngForm">
+                    <div class="form-control-group">
+                        <label
+                            for="input-test"
+                            class="label">
+                            Test:
+                        </label>
+                        <input
+                            nbInput
+                            fullWidth
+                            [(ngModel)]="selectedTestName"
+                            (change)="onTestChanged(selectedTestName)"
+                            list="input-test"
+                            name="test">
+                        <datalist
+                            *ngIf="state.profile"
+                            id="input-test">
+                            <option
+                                *ngFor="let test of testList"
+                                [value]="test.text">
+                            </option>
+                        </datalist>
+                    </div>
+                    <div class="form-control-group">
+                        <label
+                            for="input-price"
+                            class="label">
+                            Price:
+                        </label>
+                        <input
+                            nbInput
+                            fullWidth
+                            [(ngModel)]="testInput.price"
+                            name="price"
+                            placeholder="Price"
+                            class="form-control"
+                            #price="ngModel"
+                            id="input-price"
+                            [status]="price.dirty ? (price.invalid  ? 'danger' : 'success') : ''"
+                            type="number"
+                            required>
+                    </div>
+                    
+                    <button
+                        nbButton
+                        fullWidth
+                        status="success"
+                        type="submit"
+                        [disabled]="!addTest.valid || !testInput.TestId"
+                        (click)="add()">
+                        Add
+                    </button>
+                </form>
+            </nb-card-body>
+        </nb-card>
+    </div>
+    <div class="col-xxxl-3 col-md-6">
+        <nb-card>
+            <nb-card-header>Manage Test</nb-card-header>
+            <nb-card-body>
+                <nb-list *ngIf="state.profile">
+                    <nb-list-item *ngFor="let test of state.profile.tests">
+                        <p>
+                            {{ test.Test.name }}
+                            <br>
+                            Price: {{ test.price }}
+                        </p>
+                        <button
+                            nbButton
+                            shape="round"
+                            status="primary"
+                            (click)="editPrice(test.id)">
+                            <nb-icon icon="edit"></nb-icon>
+                        </button>
+                        <button
+                            nbButton
+                            shape="round"
+                            status="danger"
+                            (click)="delete(test.id)">
+                            <nb-icon icon="trash-outline"></nb-icon>
+                        </button>
+                    </nb-list-item>
+                </nb-list>
+            </nb-card-body>
+        </nb-card>
+    </div>
+</div>

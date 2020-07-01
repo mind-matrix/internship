@@ -1,6 +1,5 @@
 const { Sequelize } = require('sequelize');
 const { appendFile } = require('fs');
-const { resolve } = require('path');
 
 function slogger(msg) {
     if (process.env.SQL_LOG_FILE) {
@@ -18,12 +17,21 @@ const models = {
     Contact: require('./Contact')(sequelize),
     Address: require('./Address')(sequelize),
     Document: require('./Document')(sequelize),
+    Test: require('./Test')(sequelize),
+    BusinessTest: require('./BusinessTest')(sequelize),
     Business: require('./Business')(sequelize)
 };
 
-models.Business.Contact = models.Business.hasOne(models.Contact);
-models.Business.Address = models.Business.hasOne(models.Address);
-models.Business.Documents = models.Business.hasMany(models.Document, { as: 'documents' })
+models.BusinessTest.Test = models.BusinessTest.belongsTo(models.Test);
+
+models.Business.Contact = models.Business.hasOne(models.Contact, { onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+models.Contact.Business = models.Contact.belongsTo(models.Business);
+models.Business.Address = models.Business.hasOne(models.Address, { onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+models.Address.Business = models.Address.belongsTo(models.Business);
+models.Business.Documents = models.Business.hasMany(models.Document, { as: 'documents', onDelete: 'CASCADE' });
+models.Document.Business = models.Document.belongsTo(models.Business);
+models.Business.BusinessTests = models.Business.hasMany(models.BusinessTest, { as: 'tests', onDelete: 'CASCADE' });
+models.BusinessTest.Business = models.BusinessTest.belongsTo(models.Business);
 
 sequelize.authenticate().then(async () => {
     console.log(`Connection to Database has been established.`);

@@ -157,7 +157,7 @@ export class NgxRegisterComponent extends NbRegisterComponent implements OnInit 
   // Get Current Location Coordinates
   private setCurrentLocation() {
     if ('geolocation' in navigator) {
-      navigator.getCurrentPosition((position) => {
+      navigator.geolocation.getCurrentPosition((position) => {
         this.businessModel.address.latitude = position.coords.latitude;
         this.businessModel.address.longitude = position.coords.longitude;
         this.zoom = 8;
